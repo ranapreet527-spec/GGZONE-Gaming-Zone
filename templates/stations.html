@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Stations | GGZONE{% endblock %}
+
+{% block content %}
+<section class="section">
+    <p class="eyebrow">GAMING STATIONS</p>
+    <h1>Pick Your <span class="accent">Setup</span></h1>
+    <p>Choose a gaming station for your next session.</p>
+
+    {% if stations %}
+    <div class="station-grid">
+        {% for station in stations %}
+        <article class="card station-card">
+            <div class="station-icon">🖥️</div>
+            <h3>{{ station.name }}</h3>
+            <p>Type: {{ station.station_type }}</p>
+            <h3 class="accent">₹{{ "%.2f"|format(station.hourly_rate) }} / hour</h3>
+            <span class="tag status-{{ station.status }}">{{ station.status }}</span>
+
+            {% if station.status == 'available' %}
+                <a class="btn" href="{{ url_for('book') }}">Book Now</a>
+            {% else %}
+                <button class="btn" type="button" disabled>Under Maintenance</button>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No gaming stations found. Please initialize your database first.</p>
+    {% endif %}
+</section>
+{% endblock %}

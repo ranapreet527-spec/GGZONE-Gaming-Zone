@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | GGZONE{% endblock %}
+
+{% block content %}
+<section class="section">
+    <p class="eyebrow">CONTROL CENTER</p>
+    <h1>Admin <span class="accent">Dashboard</span></h1>
+
+    {# ---------- Stats ---------- #}
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p>Total Users</p>
+            <h2>{{ stats.users }}</h2>
+        </div>
+        <div class="stat-card">
+            <p>Total Games</p>
+            <h2>{{ stats.games }}</h2>
+        </div>
+        <div class="stat-card">
+            <p>Total Bookings</p>
+            <h2>{{ stats.bookings }}</h2>
+        </div>
+        <div class="stat-card">
+            <p>Paid Revenue</p>
+            <h2>₹{{ "%.2f"|format(stats.revenue) }}</h2>
+        </div>
+    </div>
+
+    {# ---------- Booking management ---------- #}
+    <div class="section-heading">
+        <h2>Booking Management</h2>
+        <a href="{{ url_for('manage_games') }}">Manage Games →</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID / Customer</th>
+                    <th>Game / Station</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td>#{{ b.id }}<br><small>{{ b.customer }}</small></td>
+                    <td>{{ b.game_name }}<br><small>{{ b.station_name }}</small></td>
+                    <td>{{ b.booking_date }}</td>
+                    <td>{{ b.start_time }} – {{ b.end_time }}</td>
+                    <td><span class="tag status-{{ b.status }}">{{ b.status }}</span></td>
+                    <td>
+                        <div class="actions">
+                            {% if b.status == 'pending' %}
+                            <form method="POST"
+                                  action="{{ url_for('booking_action', booking_id=b.id, action='approve') }}">
+                                <button class="small-btn" type="submit">Approve</button>
+                            </form>
+                            <form method="POST"
+                                  action="{{ url_for('booking_action', booking_id=b.id, action='reject') }}">
+                                <button class="small-btn danger-btn" type="submit">Reject</button>
+                            </form>
+
+                            {% elif b.status == 'approved' %}
+                            <form method="POST"
+                                  action="{{ url_for('session_action', booking_id=b.id, action='start') }}">
+                                <button class="small-btn" type="submit">Start Session</button>
+                            </form>
+                            <form method="POST"
+                                  action="{{ url_for('session_action', booking_id=b.id, action='end') }}">
+                                <button class="small-btn" type="submit">End Session</button>
+                            </form>
+
+                            {% elif b.status == 'completed' %}
+                            <form method="POST"
+                                  action="{{ url_for('mark_paid', booking_id=b.id) }}">
+                                <select name="payment_method" required>
+                                    <option value="Cash">Cash</option>
+                                    <option value="UPI">UPI</option>
+                                    <option value="Card">Card</option>
+                                </select>
+                                <button class="small-btn" type="submit">Mark Paid</button>
+                            </form>
+
+                            {% else %}
+                            <span class="muted">No action</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No bookings to display.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# ---------- Daily revenue ---------- #}
+    {% if daily is defined %}
+    <div class="section-heading">
+        <h2>Daily Revenue Report</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Revenue</th></tr>
+            </thead>
+            <tbody>
+                {% for row in daily %}
+                <tr>
+                    <td>{{ row.day }}</td>
+                    <td class="accent">₹{{ "%.2f"|format(row.revenue) }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2">No paid revenue recorded.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

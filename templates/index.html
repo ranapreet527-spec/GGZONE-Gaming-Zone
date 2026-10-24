@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Home | GGZONE{% endblock %}
+
+{% block content %}
+
+{# ---------- Hero ---------- #}
+<section class="hero">
+    <div>
+        <p class="eyebrow">YOUR NEXT LEVEL STARTS HERE</p>
+        <h1>Enter the<br><span>Gaming Zone</span></h1>
+        <p>Discover your favourite games and book your gaming station.</p>
+
+        <a class="btn" href="{{ url_for('games') }}">Explore Games</a>
+        {% if session.get('user_id') %}
+            <a class="btn secondary" href="{{ url_for('book') }}">Book a Station</a>
+        {% else %}
+            <a class="btn secondary" href="{{ url_for('register') }}">Join Now</a>
+        {% endif %}
+    </div>
+
+    <div class="hero-art">
+        <div class="controller">🎮</div>
+        <p>READY PLAYER ONE?</p>
+    </div>
+</section>
+
+{# ---------- Featured games ---------- #}
+<section class="section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">CHOOSE YOUR GAME</p>
+            <h2>Featured Games</h2>
+        </div>
+        <a href="{{ url_for('games') }}">View all →</a>
+    </div>
+
+    <div class="grid">
+        {% for game in games %}
+        <article class="card">
+            <div class="game-art">{{ game.name[:1] }}</div>
+            <div class="card-body">
+                <span class="tag">{{ game.platform }}</span>
+                <h3>{{ game.name }}</h3>
+                <p>{{ game.genre }}</p>
+                <p>{{ game.description or 'Available to play.' }}</p>
+            </div>
+        </article>
+        {% else %}
+        <p>No games are available yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{# ---------- Stations ---------- #}
+<section class="section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">FIND YOUR SETUP</p>
+            <h2>Gaming Stations</h2>
+        </div>
+        <a href="{{ url_for('stations') }}">View stations →</a>
+    </div>
+
+    <div class="grid">
+        {% for station in stations %}
+        <article class="card station-card">
+            <div class="station-icon">🎧</div>
+            <h3>{{ station.name }}</h3>
+            <p>{{ station.station_type }}</p>
+            <h3 class="accent">₹{{ "%.2f"|format(station.hourly_rate) }} / hour</h3>
+            <span class="tag status-{{ station.status }}">{{ station.status }}</span>
+        </article>
+        {% else %}
+        <p>No stations are currently available.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Register | GGZONE{% endblock %}
+
+{% block content %}
+<section class="form-wrap">
+    <div class="form-card">
+        <p class="eyebrow">CREATE YOUR ACCOUNT</p>
+        <h1>Join GGZONE</h1>
+        <p>Register to book your favourite gaming station.</p>
+
+        <form method="POST" data-validate>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required maxlength="100"
+                   placeholder="Enter your name">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required
+                   placeholder="you@example.com">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required
+                   minlength="8" placeholder="At least 8 characters">
+
+            <button class="btn full" type="submit">Create Account</button>
+        </form>
+
+        <p class="form-foot">
+            Already registered?
+            <a href="{{ url_for('login') }}">Login</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

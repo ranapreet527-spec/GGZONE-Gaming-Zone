@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Book a Station | GGZONE{% endblock %}
+
+{% block content %}
+<section class="form-wrap">
+    <div class="form-card wide">
+        <p class="eyebrow">RESERVE YOUR SESSION</p>
+        <h1>Book a <span class="accent">Station</span></h1>
+
+        <form method="POST" id="bookingForm">
+            <label for="station_id">Choose a Gaming Station</label>
+            <select id="station_id" name="station_id" required>
+                <option value="">Select station</option>
+                {% for station in stations %}
+                <option value="{{ station.id }}">
+                    {{ station.name }} — {{ station.station_type }}
+                    — ₹{{ "%.2f"|format(station.hourly_rate) }}/hour
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="game_id">Choose a Game</label>
+            <select id="game_id" name="game_id" required>
+                <option value="">Select game</option>
+                {% for game in games %}
+                <option value="{{ game.id }}">
+                    {{ game.name }} — {{ game.platform }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="bookingDate">Booking Date</label>
+            <input type="date" name="booking_date" id="bookingDate" required>
+
+            <div class="two-col">
+                <div>
+                    <label for="start_time">Start Time</label>
+                    <input type="time" id="start_time" name="start_time" required>
+                </div>
+                <div>
+                    <label for="end_time">End Time</label>
+                    <input type="time" id="end_time" name="end_time" required>
+                </div>
+            </div>
+
+            <button class="btn full" type="submit">Submit Booking Request</button>
+        </form>
+
+        <p class="muted">Your request must be approved by the administrator.</p>
+    </div>
+</section>
+{% endblock %}

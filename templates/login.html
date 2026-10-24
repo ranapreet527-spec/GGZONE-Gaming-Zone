@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Login | GGZONE{% endblock %}
+
+{% block content %}
+<section class="form-wrap">
+    <div class="form-card">
+        <p class="eyebrow">WELCOME BACK</p>
+        <h1>Login</h1>
+        <p>Sign in to access your account.</p>
+
+        <form method="POST">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required
+                   placeholder="you@example.com">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required
+                   placeholder="Enter your password">
+
+            <button class="btn full" type="submit">Sign In</button>
+        </form>
+
+        <p class="form-foot">
+            New player?
+            <a href="{{ url_for('register') }}">Create an account</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

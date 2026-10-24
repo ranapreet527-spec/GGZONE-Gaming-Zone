@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Manage Games | GGZONE{% endblock %}
+
+{% block content %}
+<section class="section">
+    <p class="eyebrow">ADMINISTRATION</p>
+    <h1>Manage <span class="accent">Games</span></h1>
+
+    {# ---------- Add game ---------- #}
+    <div class="form-card wide">
+        <h2>Add a Game</h2>
+
+        <form method="POST">
+            <label for="name">Game Name</label>
+            <input type="text" id="name" name="name" maxlength="150" required>
+
+            <label for="genre">Genre</label>
+            <input type="text" id="genre" name="genre" maxlength="80" required>
+
+            <label for="platform">Platform</label>
+            <select id="platform" name="platform" required>
+                <option value="PC">PC</option>
+                <option value="PlayStation">PlayStation</option>
+                <option value="Xbox">Xbox</option>
+            </select>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+
+            <button class="btn" type="submit">Add Game</button>
+        </form>
+    </div>
+
+    {# ---------- Existing games ---------- #}
+    <h2>Existing Games</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Genre</th>
+                    <th>Platform</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                <tr>
+                    <td>{{ game.name }}</td>
+                    <td>{{ game.genre }}</td>
+                    <td>{{ game.platform }}</td>
+                    <td>
+                        <span class="tag {{ 'status-available' if game.active else 'status-rejected' }}">
+                            {{ 'Active' if game.active else 'Inactive' }}
+                        </span>
+                    </td>
+                    <td>
+                        <form method="POST"
+                              action="{{ url_for('toggle_game', game_id=game.id) }}">
+                            <button class="small-btn {{ '' if not game.active else 'danger-btn' }}"
+                                    type="submit">
+                                {{ 'Deactivate' if game.active else 'Activate' }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No games found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

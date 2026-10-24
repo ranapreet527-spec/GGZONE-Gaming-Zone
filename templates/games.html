@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% block title %}Games | GGZONE{% endblock %} {% block
+content %}
+<section class="section">
+  <p class="eyebrow">GAME LIBRARY</p>
+  <h1>Choose Your <span class="accent">Game</span></h1>
+
+  <div class="toolbar">
+    <input
+      id="gameSearch"
+      type="search"
+      placeholder="Search games, genres or platforms..."
+      autocomplete="off"
+    />
+  </div>
+
+  <div class="grid" id="gamesGrid">
+    {% for game in games %} {% set game_name = game['name'] if game is mapping
+    else game[1] %} {% set image_file = 'default-game.jpg' %} {% if 'valorant'
+    in game_name|lower %} {% set image_file = 'valorant.jpg' %} {% elif
+    'fortnite' in game_name|lower %} {% set image_file = 'fortnite.jpg' %} {%
+    elif 'counter-strike' in game_name|lower or 'cs2' in game_name|lower %} {%
+    set image_file = 'cs2.jpg' %} {% elif 'minecraft' in game_name|lower %} {%
+    set image_file = 'minecraft.jpg' %} {% elif 'forza' in game_name|lower %} {%
+    set image_file = 'forza.jpg' %} {% elif 'ea sports fc' in game_name|lower %}
+    {% set image_file = 'fc-game.jpg' %} {% endif %}
+
+    <article
+      class="card searchable-game"
+      data-search="{{ game_name }} {{ game['genre'] if game is mapping else game[2] }} {{ game['platform'] if game is mapping else game[3] }}"
+    >
+      <img
+        class="game-image"
+        src="{{ url_for('static', filename='images/' ~ image_file) }}"
+        alt="{{ game_name }}"
+        onerror="
+          this.onerror = null;
+          this.style.display = 'none';
+        "
+      />
+
+      <div class="card-body">
+        <h3>{{ game_name }}</h3>
+
+        <p>{{ game['genre'] if game is mapping else game[2] }}</p>
+
+        <p>{{ game['platform'] if game is mapping else game[3] }}</p>
+
+        {% if session.get('user_id') %}
+        <a class="btn" href="{{ url_for('book') }}">Book Now</a>
+        {% else %}
+        <a class="btn" href="{{ url_for('login') }}">Login to Book</a>
+        {% endif %}
+      </div>
+    </article>
+
+    {% else %}
+    <p>No active games found.</p>
+    {% endfor %}
+  </div>
+
+  <p id="noGamesMessage" hidden>No matching games found.</p>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("gameSearch");
+    const cards = document.querySelectorAll(".searchable-game");
+    const noGamesMessage = document.getElementById("noGamesMessage");
+
+    searchInput.addEventListener("input", function () {
+      const search = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+
+      cards.forEach(function (card) {
+        const matches = card.dataset.search.toLowerCase().includes(search);
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+
+      noGamesMessage.hidden = visible > 0;
+    });
+  });
+</script>
+{% endblock %}
